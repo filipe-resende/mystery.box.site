@@ -5,8 +5,13 @@ const api = axios.create({
 })
 
 export const useApi = () => ({
-  validateToken: async (token: string) => {
-    return api.post('/validate', { token }).then(respose => respose.data)
+  validate: async (token: string) => {
+    try {
+      api.defaults.headers.common = { Authorization: `bearer ${token}` }
+      return api.post('user/validate').then(respose => respose.data)
+    } catch (error) {
+      console.log('Erro ao fazer login. Verifique suas credenciais.')
+    }
   },
   signin: async (email: string, password: string) => {
     try {
@@ -14,7 +19,14 @@ export const useApi = () => ({
         .post('user/signIn', { email, password })
         .then(respose => respose.data)
     } catch (err) {
-      console.log('Erro ao fazer login. Verifique suas credenciais.')
+      return {
+        error: err.response.statusText,
+        status: err.response ? err.response.status : 500,
+        message: err.response
+          ? err.response.data.title
+          : 'Erro ao fazer login. Verifique suas credenciais.',
+        hasError: true
+      }
     }
   },
   logout: async () => {

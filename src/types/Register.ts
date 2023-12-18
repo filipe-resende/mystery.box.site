@@ -4,4 +4,5 @@ export default interface Register {
   password: string
   cpf: string
   phone: string
+  confimation?: ''
 }

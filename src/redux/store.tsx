@@ -2,7 +2,6 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import ShoppingCartState from '../types/ShoppingCartState'
 import Item from '../types/Item'
 
-// Defina os tipos para as ações
 interface AdicionarItemAction {
   type: 'cart/adicionarItem'
   payload: Item
@@ -18,13 +17,11 @@ interface AtualizarItemAction {
   payload: { id: number }
 }
 
-// Crie um tipo de ação que inclua todas as ações possíveis
 type ShoppingCartAction =
   | AdicionarItemAction
   | RemoverItemAction
   | AtualizarItemAction
 
-// Defina o tipo do estado do carrinho
 const initialState: ShoppingCartState = {
   itens: []
 }

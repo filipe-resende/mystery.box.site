@@ -1,77 +1,77 @@
 import React, { useState } from 'react'
-import { Alert, AlertTitle, ButtonBase } from '@mui/material'
+import { ButtonBase, Checkbox } from '@mui/material'
 import { useAuth } from '../../context/auth/AuthProvider'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import Register from '../../types/Register'
-import { registerUser } from '../../services/register'
+import { registerUser } from '../../services/userService'
 import { Confimation } from '../../components/modal/confirmation'
+import { Mask, Regex, Util } from '../../util/util'
 
 export default function Login() {
+  const navigate = useNavigate()
+
+  const { path } = useParams()
   const { signin } = useAuth()
-
   const [open, setOpen] = React.useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-  const handleClose = () => {
-    setOpen(false)
-    navigate('/inicio')
-  }
-
-  const [email, setEmail] = useState('')
+  const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoginError, setIsLoginError] = useState<boolean>()
+  const [isRegisterError, setIsRegisterError] = useState(false)
+  const [checked, setChecked] = React.useState(false)
   const [isFlipped, setIsFlipped] = useState(false)
-  const [isError, setError] = useState(false)
-
   const [register, setRegister] = useState<Register>({
     name: '',
     email: '',
     password: '',
+    confimation: '',
     cpf: '',
     phone: ''
   })
 
-  const { path } = useParams()
-  const navigate = useNavigate()
+  const handleClickOpen = () => setOpen(true)
+
+  const handleClose = () => setOpen(false)
+  // navigate('/inicio')
+
+  const handleAcceptTerm = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setChecked(event.target.checked)
+
+  const isBtnCreateAccountDisabled = () => {
+    const name = Util.isEmpty(register.name)
+    const email = Regex.email(register.email)
+    const cpf = Regex.cpf(register.cpf)
+    const phone = Regex.phone(register.phone)
+    const password = Util.compareStrings(
+      register.password,
+      register.confimation
+    )
+
+    return !name && email && cpf && checked && password && phone
+  }
+
+  const isBtnLoginDesabled = () =>
+    Regex.email(login) && password.length ? false : true
 
   const handleLogin = async e => {
     e.preventDefault()
-
-    try {
-      if (email && password) {
-        await signin(email, password)
-        if (path == 'auth') {
-          navigate('/inicio')
-        }
-      }
-    } catch (err) {
-      console.log(err)
+    const response = await signin(login, password)
+    if (!response.hasError && path == 'auth') {
+      navigate('/inicio')
     }
+    setIsLoginError(response.hasError)
   }
 
   const handleRegister = async e => {
-    try {
-      e.preventDefault()
-      const registerResult = await registerUser(register)
-      if (registerResult.status == 200) {
-        handleClickOpen()
-      } else if (registerResult.status == 409) {
-        setError(true)
-
-        // Use setTimeout para definir o erro como falso após 500ms (0,5 segundos)
-        setTimeout(function () {
-          setError(false)
-        }, 4000)
-      }
-    } catch (err) {
-      console.log(err)
+    e.preventDefault()
+    const result = await registerUser(register)
+    if (result.status == 200) {
+      handleClickOpen()
+    } else if (result.status == 409) {
+      setIsRegisterError(true)
     }
   }
 
-  const handleFlipClick = () => {
-    setIsFlipped(!isFlipped)
-  }
+  const handleFlipClick = () => setIsFlipped(!isFlipped)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -79,23 +79,6 @@ export default function Login() {
       ...prevData,
       [name]: value
     }))
-  }
-
-  const phoneMask = value => {
-    if (!value) return ''
-    value = value.replace(/\D/g, '')
-    value = value.replace(/(\d{2})(\d)/, '($1) $2')
-    value = value.replace(/(\d)(\d{4})$/, '$1-$2')
-    return value
-  }
-
-  const cpfMask = value => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1')
   }
 
   return (
@@ -108,51 +91,79 @@ export default function Login() {
                 <h1>Login</h1>
                 <div className="input-box">
                   <input
+                    className={`${isLoginError ? 'form-input__error' : ''}`}
                     type="text"
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="UserName or Email"
+                    value={login}
+                    onChange={e => setLogin(e.target.value)}
+                    placeholder="Digite seu email"
                     required
+                    maxLength={50}
                   />
-                  <i className="bx bxs-user"></i>
+                  <i
+                    className={`${
+                      isLoginError
+                        ? 'bx bxs-error-circle error-color'
+                        : 'bx bxs-user'
+                    }`}
+                  ></i>
                 </div>
                 <div className="input-box">
                   <input
                     type="password"
+                    className={`${isLoginError ? 'form-input__error' : ''}`}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder="Password"
+                    placeholder="Digite sua senha"
                     required
+                    maxLength={50}
                   />
-                  <i className="bx bxs-lock-alt"></i>
+                  <i
+                    className={`${
+                      isLoginError
+                        ? 'bx bxs-error-circle error-color'
+                        : 'bx bxs-lock-alt'
+                    }`}
+                  ></i>
+                  <span hidden={!isLoginError} className="form-input-span">
+                    Verifique suas credenciais.
+                  </span>
                 </div>
-                <div className="remember-forgot">
-                  <label>
-                    <input type="checkbox" />
-                    Remeber me
-                  </label>
-                  <a href="#">Forgot password?</a>
+                <NavLink to="/login/forgotten" className="remember-forgot">
+                  Esqueceu sua senha?
+                </NavLink>
+                <div className="form-buttom--access">
+                  <button
+                    disabled={isBtnLoginDesabled()}
+                    onClick={handleLogin}
+                    className={`btn ${
+                      !isBtnLoginDesabled() ? 'btn-ready' : ''
+                    }`}
+                  >
+                    Acessar
+                  </button>
                 </div>
-                <button onClick={handleLogin} className="btn">
-                  Login
-                </button>
-                <div className="register-link">
-                  <p>
-                    {"Don't have an account"}?{' '}
-                    <ButtonBase
-                      style={{ color: '#fff' }}
-                      onClick={handleFlipClick}
-                    >
-                      {' '}
-                      Register
-                    </ButtonBase>
-                  </p>
-                </div>
+                <p className="form__p">
+                  {'Não possui uma conta? '}{' '}
+                  <ButtonBase className="register" onClick={handleFlipClick}>
+                    Registre-se
+                  </ButtonBase>
+                </p>
               </form>
             </div>
           </div>
           <div className="flip-card-back">
             <div className="wrapper">
-              <form action="">
-                <h1>Register</h1>
+              <div className="btn-div__login">
+                {' '}
+                <ButtonBase
+                  className="btn-back__icon"
+                  onClick={handleFlipClick}
+                >
+                  <i className="bx bx-arrow-back invert"></i>
+                </ButtonBase>
+              </div>
+
+              <form>
+                <h1> Registre-se</h1>
                 <div className="input-box">
                   <input
                     type="text"
@@ -161,6 +172,7 @@ export default function Login() {
                     value={register.name}
                     onChange={handleInputChange}
                     required
+                    maxLength={50}
                   />
                   <i className="bx bxs-user"></i>
                 </div>
@@ -170,7 +182,7 @@ export default function Login() {
                     maxLength={14}
                     placeholder="Digite seu CPF"
                     name="cpf"
-                    value={cpfMask(register.cpf)}
+                    value={Mask.cpf(register.cpf)}
                     onChange={handleInputChange}
                     required
                   />
@@ -182,7 +194,7 @@ export default function Login() {
                     placeholder="Digite seu telefone"
                     name="phone"
                     maxLength={15}
-                    value={phoneMask(register.phone)}
+                    value={Mask.phone(register.phone)}
                     onChange={handleInputChange}
                     required
                   />
@@ -191,7 +203,7 @@ export default function Login() {
                 <div className="input-box">
                   <input
                     type="password"
-                    placeholder="Digite um password"
+                    placeholder="Digite uma senha"
                     name="password"
                     value={register.password}
                     onChange={handleInputChange}
@@ -201,8 +213,19 @@ export default function Login() {
                 </div>
                 <div className="input-box">
                   <input
-                    type="text"
-                    placeholder="Email"
+                    type="password"
+                    placeholder="Confirme sua senha"
+                    name="confimation"
+                    value={register.confimation}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <i className="bx bxs-lock-alt"></i>
+                </div>
+                <div className="input-box">
+                  <input
+                    type="email"
+                    placeholder="Digite um e-mail"
                     name="email"
                     value={register.email}
                     onChange={handleInputChange}
@@ -210,10 +233,31 @@ export default function Login() {
                   />
                   <i className="bx bx-mail-send"></i>
                 </div>
+                <p className="form-p__accept">
+                  <Checkbox
+                    name="accept"
+                    checked={checked}
+                    onChange={handleAcceptTerm}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    style={{ color: '#fff' }}
+                  />{' '}
+                  Eu aceito os{' '}
+                  <a target="_blank" href="/termos">
+                    Termos e Politica de privacidade
+                  </a>{' '}
+                  do site.
+                </p>
 
                 <div className="col-md-4"></div>
-                <button type="submit" className="btn" onClick={handleRegister}>
-                  Create Account
+                <button
+                  type="submit"
+                  disabled={!isBtnCreateAccountDisabled()}
+                  className={`btn ${
+                    isBtnCreateAccountDisabled() ? 'btn-ready' : ''
+                  }`}
+                  onClick={handleRegister}
+                >
+                  Criar Conta
                 </button>
 
                 <Confimation open={open} onClose={handleClose}></Confimation>

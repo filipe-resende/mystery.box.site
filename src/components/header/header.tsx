@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 
 import { Image } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
-import { Button } from '@mui/material'
+import { Button, ButtonBase, IconButton } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { useAuth } from '../context/auth/AuthProvider'
-import CartModal from './modal/cart'
-
+import { useAuth } from '../../context/auth/AuthProvider'
+import CartModal from '../modal/cart'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import PersonIcon from '@mui/icons-material/Person'
+import LogoutIcon from '@mui/icons-material/Logout'
 export default function Header() {
   const [open, setOpen] = useState(false)
   const carrinhoItens = useSelector((state: any) => state.carrinho.itens)
@@ -60,58 +63,41 @@ export default function Header() {
                   TERMOS DE USO
                 </NavLink>
               </li>
-              {user && (
-                <li>
-                  <NavLink
-                    to="/termos"
-                    className={({ isActive, isPending }) =>
-                      isPending ? 'pending' : isActive ? 'active' : ''
-                    }
-                  >
-                    MINHAS COMPRAS
-                  </NavLink>
-                </li>
-              )}
             </ul>
           </nav>
-          <div className="user-panel">
-            <Button
-              className="icon-user"
-              onClick={handleOpen}
-              style={{ color: 'white' }}
-            >
+          <div className="nav-icon-painel">
+            <IconButton onClick={handleOpen} className="btn-painel ">
               {carrinhoItens.length > 0 && (
-                <div className="notification-circle">
+                <div className="shopcart-icon__length">
                   <span>{carrinhoItens.length}</span>
                 </div>
               )}
-              <a>
-                <i className="fa fa-shopping-bag icon-header"></i>
-              </a>
-            </Button>
+              <ShoppingCartIcon className="icon"></ShoppingCartIcon>
+            </IconButton>
 
             {user ? (
               <>
-                <div className="user-email">{user.email}</div>
-                <Button
-                  className="icon-user"
-                  style={{ color: 'white' }}
-                  onClick={signout}
-                >
-                  <i className="fa fa-sign-out" aria-hidden="true"></i>
-                </Button>
+                <IconButton className="btn-painel " onClick={signout}>
+                  <AccountCircleIcon className="icon icon__account" />
+                  <div className="icon-account__div">
+                    <p className="icon-account__p">Minhas Compras</p>
+                    <p className="icon-account__p">Logout</p>
+                  </div>
+                </IconButton>
+                {/* <IconButton className="btn-painel " onClick={signout}>
+                  <LogoutIcon className="icon faEllipsisV" />
+                </IconButton> */}
               </>
             ) : (
-              <Button className="icon-user" style={{ color: 'white' }}>
+              <IconButton className="btn-painel ">
                 <NavLink
-                  className="icon-user"
                   to={{
                     pathname: '/login/auth'
                   }}
                 >
-                  <i className="fa fa-user icon-header"></i>
+                  <PersonIcon className="icon faEllipsisV" />
                 </NavLink>
-              </Button>
+              </IconButton>
             )}
           </div>
         </div>

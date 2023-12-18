@@ -1,10 +1,12 @@
 import { createContext } from 'react'
 import { User } from '../../types/User'
+import { RequestReponse } from '../../services/userService'
 
 export type AuthContextType = {
   user: User | null
   token: string
-  signin: (email: string, password: string) => void
+  signin: (email: string, password: string) => Promise<RequestReponse>
+  validate: (token: string) => void
   signout: () => void
 }
 

@@ -6,6 +6,9 @@ import Login from '../pages/login/login'
 import { RequireAuth } from '../context/auth/RequireAuth'
 import About from '../pages/about'
 import Terms from '../pages/terms'
+import Forgotten from '../pages/login/forgotten'
+import Active from '../pages/login/active'
+import Reset from '../pages/login/reset'
 
 export const Routes = () =>
   useRoutes([
@@ -20,6 +23,18 @@ export const Routes = () =>
     {
       path: '/login/:path',
       element: <Login />
+    },
+    {
+      path: '/login/forgotten/',
+      element: <Forgotten />
+    },
+    {
+      path: '/login/active/:token',
+      element: <Active />
+    },
+    {
+      path: '/login/reset/:token',
+      element: <Reset />
     },
     {
       path: '/sobre',

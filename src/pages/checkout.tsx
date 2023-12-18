@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { formatNumberToBRL } from '../util/util'
 import { Card } from '../types/payment/Card'
-import { processPayment } from '../services/checkout'
+import { processPayment } from '../services/checkoutService'
 import { useAuth } from '../context/auth/AuthProvider'
+import { Util } from '../util/util'
 
 export default function Checkout() {
   const itens = useSelector((state: any) => state.carrinho.itens)
@@ -19,8 +19,12 @@ export default function Checkout() {
     year: '',
     securitycode: '',
     name: '',
-    installments: ''
+    installments: '1'
   })
+
+  const isBtnCreateAccountDisabled = () => {
+    return Object.values(payment).every(value => value !== '' && value !== null)
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -32,7 +36,7 @@ export default function Checkout() {
 
   const total = getSubtotal()
 
-  const handlePlaceOrder = async () => {
+  const handleChekout = async () => {
     const response = await processPayment(payment, itens, token)
     console.log('Resultado do pagamento:', response)
   }
@@ -57,7 +61,7 @@ export default function Checkout() {
           <div className="map"></div>
           <div className="row">
             <div className="col-lg-7 order-1 order-lg-1 contact-text text-white">
-              <h3>Billing details</h3>
+              <h3 className="checkout-container__title">Detalhes da compra</h3>
               <form className="contact-form">
                 <input
                   type="number"
@@ -69,7 +73,6 @@ export default function Checkout() {
                 />
                 <div className="row">
                   <div className="col-sm">
-                    {' '}
                     <input
                       type="text"
                       name="month"
@@ -142,41 +145,49 @@ export default function Checkout() {
                   }}
                 >
                   <option style={{ color: 'black' }} value="1">
-                    1x de {formatNumberToBRL(total)}
+                    1x de {Util.convertToCurrency(total)}
                   </option>
                   <option style={{ color: 'black' }} value="2">
-                    2x de {formatNumberToBRL(total / 2)}
+                    2x de {Util.convertToCurrency(total / 2)}
                   </option>
                   <option style={{ color: 'black' }} value="3">
-                    3x de {formatNumberToBRL(total / 3)}
+                    3x de {Util.convertToCurrency(total / 3)}
                   </option>
                 </select>
               </form>
             </div>
             <div className="col-lg-5 order-2 order-lg-2 contact-text text-white">
               <div className="container">
-                <h3>Your order</h3>
-                <div className="row">
+                <h3 className="checkout-container__title">Sua compra</h3>
+                <div className="checkout-container__subtitle">
                   <div className="col-sm">Produto</div>
                   <div className="col-sm">Subtotal</div>
                 </div>
                 {itens.map(item => (
-                  <div className="row" key={item.id}>
-                    <div className="col-sm">
+                  <div className="checkout-container__itens" key={item.id}>
+                    <div className="col-sm center">
                       {item.name} x {item.quantity}
                     </div>
-                    <div className="col-sm">
-                      {formatNumberToBRL(item.price * item.quantity)}
+                    <div className="col-sm center">
+                      {Util.convertToCurrency(item.price * item.quantity)}
                     </div>
                   </div>
                 ))}
-                <div className="row">
+                <div className="checkout-container__total">
                   <div className="col-sm">Total</div>
-                  <div className="col-sm">{formatNumberToBRL(total)}</div>
+                  <div className="col-sm">{Util.convertToCurrency(total)}</div>
                 </div>
-                <button className="site-btn" onClick={() => handlePlaceOrder()}>
-                  Place order
-                  <img src="/img/icons/double-arrow.png" alt="#" />
+                <button
+                  disabled={!isBtnCreateAccountDisabled()}
+                  type="submit"
+                  className={`container-btn_submit ${
+                    isBtnCreateAccountDisabled()
+                      ? 'container-btn-submit__ready '
+                      : ''
+                  }`}
+                  onClick={handleChekout}
+                >
+                  Confimar Pagamento
                 </button>
               </div>
             </div>

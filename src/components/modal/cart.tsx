@@ -12,7 +12,7 @@ import { Image } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { removerItem } from '../../redux/store'
 import { NavLink } from 'react-router-dom'
-import { formatNumberToBRL } from '../../util/util'
+import { Util } from '../../util/util'
 
 interface Props {
   open: boolean
@@ -114,7 +114,7 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
                   <Grid item xs>
                     <Typography variant="subtitle1" component="div">
                       {item.quantity} x{' '}
-                      {formatNumberToBRL(item.price * item.quantity)}
+                      {Util.convertToCurrency(item.price * item.quantity)}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -129,7 +129,7 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
           >
             <Typography id="modal-modal-description">Subtotal:</Typography>
             <Typography id="modal-modal-description">
-              {formatNumberToBRL(getSubtotal())}
+              {Util.convertToCurrency(getSubtotal())}
             </Typography>
           </Grid>
           {itens.length > 0 ? (

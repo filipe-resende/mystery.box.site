@@ -16,7 +16,6 @@ body {
 	height: 100%;
 	font-family: 'Roboto', sans-serif;
 	-webkit-font-smoothing: antialiased;
-	font-smoothing: antialiased;
 }
 
 h1,
@@ -59,6 +58,11 @@ p {
 	color: #585858;
 	line-height: 1.6;
 	font-weight: 500;
+}
+
+.icon {
+	font-size: 18px;
+	color: #fff
 }
 
 img {
@@ -159,13 +163,17 @@ ol {
 	padding: 24px 30px;
 	border-radius: 0;
 	text-transform: uppercase;
-	color: #081624;
+	color: #9C27B0;
 	line-height: normal;
 	cursor: pointer;
 	text-align: center;
 	background: #fff;
 	position: relative;
 	z-index: 1;
+}
+
+.w-100 {
+	width: 100%;
 }
 
 .site-btn img {
@@ -333,6 +341,7 @@ ol {
 	-webkit-box-shadow: 0 0 9px 3px rgba(226, 30, 228, 0.24);
 	box-shadow: 0 0 9px 3px rgba(226, 30, 228, 0.24);
 	display: flex;
+	border-radius: 50px;
 }
 
 .header-bar-figure {
@@ -344,13 +353,17 @@ ol {
 	float: left;
 }
 
-.user-panel {
-	align-items: center;
+.nav-icon-painel {
 	display: flex;
-	float: right;
-	font-size: 16px;
-	font-weight: 500;
-	color: #fff;
+	margin: 0 1em;
+}
+
+.btn-painel:hover {
+	color: #b01ba5 !important;
+
+	.icon-account__div {
+		display: block !important;
+	}
 }
 
 .user-panel a {
@@ -398,8 +411,6 @@ ol {
 	color: #b01ba5;
 }
 
-.main-menu li a:hover:after {}
-
 .main-menu li a:hover i {
 	color: #b01ba5;
 }
@@ -413,8 +424,6 @@ ol {
 .main-menu li:hover>a {
 	color: #b01ba5;
 }
-
-.main-menu li:hover>a:after {}
 
 .main-menu li .sub-menu {
 	position: absolute;
@@ -462,6 +471,9 @@ ol {
 /*------------------
   Hero section
 ---------------------*/
+.form-buttom--access {
+	margin: 10px 0;
+}
 
 .hero-slider .owl-dots {
 	display: -ms-flex;
@@ -539,6 +551,16 @@ ol {
 .hero-item .site-btn {
 	position: relative;
 	top: 50px;
+	z-index: 10;
+}
+
+.shop-div__span {
+	margin: 1em;
+	align-self: center;
+}
+
+.shop-div__icon {
+	padding-right: 1em;
 }
 
 .hero-slider .owl-item.active .hero-item h2,
@@ -996,15 +1018,56 @@ ol {
 /* ----------------
   Footer section
 ---------------------*/
+.container-btn_submit {
+	background-color: #b61bad;
+	color: #fff;
+	padding: 10px 15px;
+	box-shadow: 0 4px 8px rgba(182, 27, 173, 0.5);
+	transition: box-shadow 0.3s ease;
+	width: 100%;
+	opacity: 0.4;
+	border-radius: 40px;
+	border: solid 1px white;
+	cursor: auto;
+	margin: 0 1em;
+}
+
+.center {
+	align-self: center;
+}
+
+.checkout-container__subtitle {
+	display: flex;
+	margin: 1em 0px;
+	text-align: center;
+}
+
+.checkout-container__title {
+	display: flex;
+	justify-content: center;
+}
+
+.checkout-container__itens {
+	display: flex;
+	margin: 0.5em;
+	text-align: center;
+}
+
+.container-btn-submit__ready {
+	opacity: 1 !important;
+	cursor: pointer;
+}
+
+.checkout-container__total {
+	display: flex;
+	text-align: center;
+	margin: 0 1em;
+}
 
 .footer-section {
 	text-align: center;
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#330d38+0,190d36+100 */
 	background: #330d38;
-	/* Old browsers */
-	/* FF3.6-15 */
 	background: -webkit-linear-gradient(left, #330d38 0%, #190d36 100%);
-	/* Chrome10-25,Safari5.1-6 */
 	background: -webkit-gradient(linear, left top, right top, from(#330d38), to(#190d36));
 	background: -o-linear-gradient(left, #330d38 0%, #190d36 100%);
 	background: linear-gradient(to right, #330d38 0%, #190d36 100%);
@@ -1582,9 +1645,6 @@ ol {
 /* Tablet :768px. */
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
-	.header-bar-warp {
-		padding: 39px 15px 0;
-	}
 
 	.main-menu li a {
 		margin-right: 10px;
@@ -1660,12 +1720,20 @@ ol {
 	}
 }
 
+.btn-div__login {
+	width: 100%;
+	justify-content: flex-end;
+	display: flex;
+}
+
+.btn-back__icon {
+	font-size: 20px;
+}
+
 /* Large Mobile :480px. */
 
 @media only screen and (max-width: 767px) {
-	.header-bar-warp {
-		padding: 25px 20px 10px;
-	}
+
 
 	.main-menu.primary-menu {
 		display: none;
@@ -1834,29 +1902,30 @@ ol {
 .image-container {
 	position: relative;
 	overflow: hidden;
+	border: 2px solid #b01ba5;
+}
+
+i {
+	font-size: 18px !important;
 }
 
 .image-container img {
 	width: 100%;
 	height: 100%;
 	transition: transform 0.3s;
-	/* Transição suave para escala da imagem */
 }
 
 .hover-icon {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 5px;
+	right: 5px;
 	background-color: rgba(0, 0, 0, 0.5);
-	/* Cor de fundo do ícone */
-	padding: 5px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	transition: background-color 0.3s, opacity 0.3s;
-	/* Transições suaves para cor de fundo e opacidade */
 	opacity: 0;
-	/* Inicialmente, o ícone é invisível */
+	border-radius: 40px;
 }
 
 .search-icon {
@@ -1873,24 +1942,50 @@ ol {
 
 .image-container:hover .hover-icon {
 	opacity: 1;
-	/* Torna o ícone visível no hover */
 	background-color: rgba(0, 0, 0, 0.7);
-	/* Altera a cor de fundo no hover */
 }
 
-.notification-circle {
+.icon:hover {
+	color: #b01ba5 !important;
+}
+
+.icon-account__div {
+	display: none;
+	padding-left: 5px;
+	top: 50px;
+	left: 0px;
+	position: absolute;
+	width: 150px;
+
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.icon-account__p {
+	color: white;
+	font-size: 14px;
+	border: solid 1px white;
+	border-radius: 5px;
+	border-block-end: none;
+	text-align: start;
+	padding: 5px;
+}
+
+.icon-account__p:nth-child(2) {
+	border-bottom: 1px solid #fff;
+}
+
+.shopcart-icon__length {
 	background-color: white;
-	color: black;
+	color: #5918a6;
 	border-radius: 50%;
 	width: 16px;
 	height: 16px;
 	font-size: 12px;
 	position: absolute;
-	bottom: 29px;
-	left: 38px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	bottom: 38px;
+	left: 18px;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
@@ -1906,7 +2001,7 @@ ol {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	min-height: 100vh;
+	height: 100vh;
 	background: url('./assets/img/slider-bg-1.jpg') no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -1933,7 +2028,17 @@ ol {
 	position: relative;
 	width: 100%;
 	height: 50px;
-	margin: 30px 0;
+	margin: 26px 0;
+}
+
+.form__p {
+	margin-bottom: 0px;
+}
+
+.div-form__h6 {
+	text-align: center;
+	margin: 20px 0px;
+	color: #fff
 }
 
 .input-box input {
@@ -1963,9 +2068,39 @@ ol {
 
 .wrapper .remember-forgot {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	font-size: 14.5px;
-	margin: -15px 0 15px;
+	color: #fff;
+	padding-top: 10px;
+}
+
+.form-input__error {
+	border: 2px solid #cd5151 !important;
+}
+
+.form-input-span {
+	color: #cd5151;
+	font-size: 16px;
+}
+
+.invert {
+	transform: scaleX(-1);
+}
+
+.form-p__accept {
+	white-space: nowrap;
+	color: #fff;
+	margin: 1em;
+	font-size: 12px;
+	text-align: justify;
+}
+
+.error-color {
+	color: #cd5151;
+}
+
+.error-color:hover {
+	color: #cd5151;
 }
 
 .remember-forgot label input {
@@ -1982,18 +2117,35 @@ ol {
 	text-decoration: underline;
 }
 
+.register {
+	color: #fff !important;
+	text-decoration: none;
+}
+
+.register:hover {
+	color: #fff;
+	text-decoration: underline;
+}
+
 .wrapper .btn {
 	width: 100%;
 	height: 45px;
-	background: #fff;
+	background: #673AB7;
 	border: none;
 	outline: none;
 	border-radius: 40px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-	cursor: pointer;
 	font-size: 16px;
-	color: #333;
 	font-weight: 600;
+	color: #fff;
+	opacity: 0.5;
+}
+
+.btn-ready {
+	border: solid 1px #fff !important;
+	opacity: 1 !important;
+	cursor: pointer !important;
+	background-color: rgb(57 19 131 / 80%) !important;
 }
 
 .wrapper .register-link {
@@ -2015,8 +2167,9 @@ ol {
 
 .flip-card {
 	background-color: transparent;
-	width: 600px;
-	height: 600px;
+	width: 100vh;
+	display: flex;
+	justify-content: center;
 	perspective: 1000px;
 }
 
@@ -2025,6 +2178,8 @@ ol {
 }
 
 .flip-card-inner {
+	display: flex;
+	justify-content: center;
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -2064,4 +2219,29 @@ ol {
 
 .active {
 	color: #b01ba5 !important;
+}
+
+.parallax {
+	flex-direction: column;
+	height: 80vh !important;
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+
+.parallax:after {
+	content: "";
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: 8;
+	background: -moz-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 80%, #000 100%);
+	background: -webkit-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 80%, #000 100%);
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 80%, #000 100%);
 }
