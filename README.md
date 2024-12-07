@@ -62,6 +62,12 @@
   <li>Envie sua branch (<code>git push origin feature/nome-da-feature</code>).</li>
   <li>Crie um pull request.</li>
 </ol>
+<h3 align="left">📫 Contato</h3>
+
+<p align="left">Desenvolvido por Filipe de Castro.<br>
+- <strong>Email:</strong> filipedecastroresende@gmail.com<br>
+- <strong>GitHub:</strong> <a href="https://github.com/filipe-resende">GitHub</a><br>
+- <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/filipe-resende">LinkedIn</a></p>
 
 <h3 align="left">📝 Licença</h3>
 
