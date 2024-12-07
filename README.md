@@ -11,7 +11,7 @@
     <li><strong>Gerenciamento de estado:</strong> Redux</li>
     <li><strong>Estilização:</strong> CSS e Bootstrap</li>
     <li><strong>Lógica:</strong> TypeScript e JavaScript</li>
-    <li><strong>Backend:</strong> [Aqui você pode adicionar informações sobre o backend, como linguagem e frameworks utilizados]</li>
+    <li><strong>Backend:</strong> https://github.com/filipe-resende/MisteryBox.Api</li>
   </ul>
 </ul>
 
