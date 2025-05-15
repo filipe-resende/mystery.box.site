@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { sendEmailResetUserPassword } from '../../services/userService'
+import { useUser } from '@/hooks/useUser'
 
 export default function Forgotten() {
+  const { sendEmailResetUserPassword } = useUser()
   const [email, setEmail] = useState('')
   const [isEmailSent, setIsEmailSent] = useState(false)
 

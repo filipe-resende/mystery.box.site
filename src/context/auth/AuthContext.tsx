@@ -1,6 +1,6 @@
 import { createContext } from 'react'
-import { User } from '../../types/User'
-import { RequestReponse } from '../../services/userService'
+import { User } from '@/types/User'
+import { RequestReponse } from '@/hooks/useUser'
 
 export type AuthContextType = {
   user: User | null

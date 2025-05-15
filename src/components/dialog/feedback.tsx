@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -31,19 +32,46 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 interface Props {
   open: boolean
   onClose: () => void
+  type: 'success' | 'error'
+  title?: string
+  message?: string
+  buttonText?: string
 }
 
-export const Confirmation: React.FC<Props> = ({ open, onClose }) => {
+export const Feedback: React.FC<Props> = ({
+  open,
+  onClose,
+  type,
+  title,
+  message,
+  buttonText
+}) => {
+  const isSuccess = type === 'success'
+
+  const icon = isSuccess ? (
+    <CheckCircleOutlineIcon color="success" fontSize="large" />
+  ) : (
+    <ErrorOutlineIcon color="error" fontSize="large" />
+  )
+
+  const defaultTitle = isSuccess ? 'Tudo certo!' : 'Ocorreu um problema'
+  const defaultMessage = isSuccess
+    ? 'Sua ação foi concluída com sucesso.'
+    : 'Não foi possível concluir sua solicitação. Tente novamente mais tarde.'
+
   return (
     <StyledDialog
       onClose={onClose}
-      aria-labelledby="confirmation-dialog-title"
+      aria-labelledby="feedback-dialog-title"
       open={open}
       sx={{ zIndex: 2000 }}
     >
-      <DialogTitle id="confirmation-dialog-title">
-        <CheckCircleOutlineIcon color="success" fontSize="large" />
-        Conta criada com sucesso!
+      <DialogTitle
+        id="feedback-dialog-title"
+        sx={{ color: isSuccess ? 'success.main' : 'error.main' }}
+      >
+        {icon}
+        {title || defaultTitle}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -60,14 +88,17 @@ export const Confirmation: React.FC<Props> = ({ open, onClose }) => {
 
       <DialogContent dividers>
         <Typography variant="body1" gutterBottom>
-          Um e-mail de confirmação foi enviado para sua caixa de entrada.
-          Verifique e siga as instruções para ativar sua conta.
+          {message || defaultMessage}
         </Typography>
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onClose}>
-          Entendi
+        <Button
+          variant={isSuccess ? 'contained' : 'outlined'}
+          color={isSuccess ? 'primary' : 'error'}
+          onClick={onClose}
+        >
+          {buttonText || 'Fechar'}
         </Button>
       </DialogActions>
     </StyledDialog>
