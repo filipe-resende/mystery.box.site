@@ -1,24 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useApi } from '../../hooks/useApi'
-import { User } from '../../types/User'
+import { useAuthApi } from '@/hooks/useAuth'
+import { User } from '@/types/User'
 import { AuthContext } from './AuthContext'
-import { RequestReponse } from '../../services/userService'
+import { RequestReponse } from '@/hooks/useUser'
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
+  const { login, authorize } = useAuthApi()
+
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
 
-  const api = useApi()
-
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      validate(token)
+    if (user) {
+      validate()
     }
   }, [])
 
   const signin = async (email, password): Promise<RequestReponse> => {
-    const reponse = await api.signin(email, password)
+    const reponse = await login(email, password)
     if (reponse?.user && reponse?.token) {
       setUser(reponse.user)
       setToken(reponse.token)
@@ -26,11 +25,16 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       return {
         status: 200,
         error: '',
-        message: '',
+        message: 'Autenticação realizada com sucesso!',
         hasError: false
       }
     } else {
-      return reponse
+      return {
+        status: 400,
+        error: '',
+        message: 'Usuário ou senha inválidos',
+        hasError: true
+      }
     }
   }
 
@@ -40,8 +44,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     localStorage.removeItem('token')
   }
 
-  const validate = async (token: string) => {
-    const userData = await api.validate(token)
+  const validate = async () => {
+    const userData = await authorize()
     if (userData?.user && userData?.token) {
       setUser(userData.user)
       setToken(userData.token)

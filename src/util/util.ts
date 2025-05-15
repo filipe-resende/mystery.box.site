@@ -21,6 +21,30 @@ export class Regex {
   public static phone(phone: string) {
     return this.regex.telephone.test(phone)
   }
+
+  public static formatCPF = (value: string) =>
+    value
+      .replace(/\D/g, '')
+      .slice(0, 11)
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+
+  public static formatCardNumber = (value: string) =>
+    value
+      .replace(/\D/g, '')
+      .slice(0, 16)
+      .replace(/(\d{4})(?=\d)/g, '$1 ')
+      .trim()
+
+  public static formatMonth = (value: string) =>
+    value.replace(/\D/g, '').slice(0, 2)
+
+  public static formatYear = (value: string) =>
+    value.replace(/\D/g, '').slice(0, 4)
+
+  public static formatCVC = (value: string) =>
+    value.replace(/\D/g, '').slice(0, 3)
 }
 
 export class Mask {
@@ -32,6 +56,7 @@ export class Mask {
     return value
   }
   public static cpf = value => {
+    if (!value) return ''
     return value
       .replace(/\D/g, '')
       .replace(/(\d{3})(\d)/, '$1.$2')
@@ -46,7 +71,7 @@ export class Util {
     return str1 === str2
   }
   public static isEmpty(str1: string) {
-    return !str1.length
+    return !str1?.length
   }
   public static convertToCurrency(
     number: number,
