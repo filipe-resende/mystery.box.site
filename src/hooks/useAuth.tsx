@@ -52,18 +52,22 @@ export function useAuthApi() {
     }
   }
 
-  const logoff = async (): Promise<any> => {
+  const logoff = async (): Promise<boolean> => {
     setLoading(true)
     setError(null)
     try {
-      const response = await api.post('/logout')
-      if (response.data.isSuccess) {
-        return response.data
+      const response = await api.post<Response<null>>('/user/logout')
+      if (response.data?.isSuccess) {
+        return true
       } else {
         setError(response.data.error)
+        return false
       }
-    } catch (err) {
-      setError(err)
+    } catch (err: unknown) {
+      const axiosErr = err as AxiosError
+      console.error('Erro no logout:', axiosErr)
+      setError({ message: 'Erro ao sair', code: 'LOGOUT_ERROR' })
+      return false
     } finally {
       setLoading(false)
     }
