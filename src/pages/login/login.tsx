@@ -89,7 +89,7 @@ export default function Login() {
                   </button>
                 </div>
                 <p className="form__p">
-                  {'Não possui uma conta? '}{' '}
+                  {'Não possui uma conta? '}
                   <ButtonBase className="register" onClick={handleFlipClick}>
                     Registre-se
                   </ButtonBase>

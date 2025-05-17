@@ -2,50 +2,50 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import ShoppingCartState from '../types/ShoppingCartState'
 import Item from '../types/Item'
 
-interface AdicionarItemAction {
-  type: 'cart/adicionarItem'
-  payload: Item
-}
-
-interface RemoverItemAction {
-  type: 'cart/removerItem'
-  payload: number
-}
-
-interface AtualizarItemAction {
-  type: 'cart/atualizarItem'
-  payload: { id: number }
-}
-
-type ShoppingCartAction =
-  | AdicionarItemAction
-  | RemoverItemAction
-  | AtualizarItemAction
-
 const initialState: ShoppingCartState = {
   itens: []
 }
 
 const carrinhoSlice = createSlice({
-  name: 'cart',
+  name: 'carrinho',
   initialState,
   reducers: {
     adicionarItem: (state, action: PayloadAction<Item>) => {
-      state.itens.push(action.payload)
-    },
-    removerItem: (state, action: PayloadAction<number>) => {
-      state.itens = state.itens.filter(item => item.id !== action.payload)
-    },
-    atualizarItem: (state, action: PayloadAction<{ id: number }>) => {
-      const { id } = action.payload
-      const itemExistente = state.itens.find(item => item.id === id)
+      const itemExistente = state.itens.find(i => i.id === action.payload.id)
 
       if (itemExistente) {
-        itemExistente.quantity = itemExistente.quantity + 1
+        itemExistente.quantity += action.payload.quantity
+      } else {
+        state.itens.push(action.payload)
       }
+    },
+
+    atualizarItem: (state, action: PayloadAction<{ id: number }>) => {
+      const item = state.itens.find(i => i.id === action.payload.id)
+      if (item) {
+        item.quantity += 1
+      }
+    },
+
+    diminuirItem: (state, action: PayloadAction<{ id: number }>) => {
+      const item = state.itens.find(i => i.id === action.payload.id)
+      if (item) {
+        if (item.quantity > 1) {
+          item.quantity -= 1
+        } else {
+          state.itens = state.itens.filter(i => i.id !== action.payload.id)
+        }
+      }
+    },
+
+    removerItem: (state, action: PayloadAction<number>) => {
+      state.itens = state.itens.filter(item => item.id !== action.payload)
     }
   }
 })
+
+export const { adicionarItem, removerItem, atualizarItem, diminuirItem } =
+  carrinhoSlice.actions
 
 const store = configureStore({
   reducer: {
@@ -53,7 +53,8 @@ const store = configureStore({
   }
 })
 
-export const { adicionarItem, removerItem, atualizarItem } =
-  carrinhoSlice.actions
+// Tipos para usar com useSelector e useDispatch
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 
 export default store

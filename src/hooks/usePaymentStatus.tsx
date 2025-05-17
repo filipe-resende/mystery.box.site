@@ -23,7 +23,7 @@ export const useSignalRPaymentStatus = (
     const handlePagamentoAtualizado = (data: any) => {
       console.log('🔔 Atualização recebida via SignalR:', data)
 
-      if (data?.id === paymentId) {
+      if (data?.id == paymentId) {
         onUpdate()
       }
     }

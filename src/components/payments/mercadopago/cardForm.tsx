@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import { Card } from '@/types/payment/Card'
-import { Regex, Util } from '@/util/util'
-import { createCardToken, initMercadoPago } from '@mercadopago/sdk-react'
 import {
   Box,
   Typography,
@@ -14,11 +11,15 @@ import {
   CircularProgress
 } from '@mui/material'
 import { useSelector } from 'react-redux'
-import MercadoPagoSecureFields from './secureFields'
+import { createCardToken, initMercadoPago } from '@mercadopago/sdk-react'
 import axios from 'axios'
+
+import { Card } from '@/types/payment/Card'
+import { Regex, Util } from '@/util/util'
+import MercadoPagoSecureFields from './secureFields'
 import { useSignalRPaymentStatus } from '@/hooks/usePaymentStatus'
 import PaymentStatus from '@/types/payment/PaymentStatus'
-import { Response } from '@/types/Reponse'
+import { Response, Result } from '@/types/Reponse'
 
 const MercadoPagoCardForm = () => {
   initMercadoPago(process.env.REACT_APP_MERCADO_PAGO_PUBLIC_KEY || '')
@@ -38,31 +39,40 @@ const MercadoPagoCardForm = () => {
   >('idle')
 
   const itens = useSelector((state: any) => state.carrinho.itens)
-  const total = itens.reduce((acc, item) => acc + item.quantity * item.price, 0)
-  const itemIds = useSelector((state: any) =>
-    state.carrinho.itens.map((item: any) => item.id)
+  const total = itens.reduce(
+    (acc: number, item: any) => acc + item.quantity * item.price,
+    0
   )
+  const itemIds = itens.map((item: any) => item.id)
 
   useSignalRPaymentStatus(paymentId, async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get<Result<PaymentStatus>>(
         `${process.env.REACT_APP_API}/payment/${paymentId}`,
-        {
-          withCredentials: true
-        }
+        { withCredentials: true }
       )
 
-      const status = response.data?.status
-      if (status === 'approved') {
+      if (data.isSuccess && data.value.status === 'approved') {
         setStatus('success')
       } else {
         setStatus('error')
       }
-    } catch (error) {
-      console.error('❌ Erro ao buscar status real:', error)
+    } catch (err) {
+      console.error('❌ Erro ao buscar status real:', err)
       setStatus('error')
     }
   })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    let formatted = value
+
+    if (name === 'identificationNumber') {
+      formatted = Regex.formatCPF(value)
+    }
+
+    setPayment(prev => ({ ...prev, [name]: formatted }))
+  }
 
   const handleCheckout = async () => {
     setError(null)
@@ -102,6 +112,8 @@ const MercadoPagoCardForm = () => {
       if (res.data.isSuccess) {
         setPaymentId(res.data.value.transactionId)
         setStatus('processing')
+      } else {
+        throw new Error('Falha ao iniciar pagamento.')
       }
     } catch (err: any) {
       console.error('Erro ao processar pagamento:', err)
@@ -110,17 +122,6 @@ const MercadoPagoCardForm = () => {
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    let formattedValue = value
-
-    if (name === 'identificationNumber') {
-      formattedValue = Regex.formatCPF(value)
-    }
-
-    setPayment(prev => ({ ...prev, [name]: formattedValue }))
   }
 
   const muiInputSx = {
@@ -209,19 +210,21 @@ const MercadoPagoCardForm = () => {
         </Typography>
       )}
 
-      <Button
-        variant="contained"
-        fullWidth
-        sx={{ mt: 3 }}
-        onClick={handleCheckout}
-        disabled={loading || status === 'processing'}
-      >
-        {loading ? (
-          <CircularProgress size={24} sx={{ color: '#fff' }} />
-        ) : (
-          'Confirmar Pagamento'
-        )}
-      </Button>
+      {status === 'idle' && (
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ mt: 3 }}
+          onClick={handleCheckout}
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: '#fff' }} />
+          ) : (
+            'Confirmar Pagamento'
+          )}
+        </Button>
+      )}
     </Box>
   )
 }
