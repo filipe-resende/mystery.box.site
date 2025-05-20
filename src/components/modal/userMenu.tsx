@@ -12,7 +12,10 @@ export default function userMenu({ open, onClose, anchorEl, onLogout }: any) {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      <MenuItem component={NavLink} to="/compras" onClick={onClose}>
+      <MenuItem component={NavLink} to="/perfil" onClick={onClose}>
+        Perfil
+      </MenuItem>
+      <MenuItem component={NavLink} to="/minhas-compras" onClick={onClose}>
         Minhas Compras
       </MenuItem>
       <MenuItem

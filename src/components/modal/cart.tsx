@@ -30,6 +30,7 @@ const style = {
   width: 400,
   maxHeight: '80vh',
   color: '#fff',
+  background: 'linear-gradient(45deg, #501755 0%, #231342 100%)',
   border: '2px solid #b01ba5',
   boxShadow: 24,
   p: 3,
@@ -63,7 +64,7 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
   }
 
   const getSubtotal = () =>
-    itens.reduce((total, item) => total + item.quantity * item.price, 0)
+    itens.reduce((total, item) => total + item.quantity * item.unitPrice, 0)
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -112,8 +113,8 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <img
                     className="image-container"
-                    src={'/img/games/1.jpg'}
-                    alt={item.name}
+                    src={item.pictureUrl}
+                    alt={item.title}
                     style={{
                       width: 80,
                       height: 80,
@@ -128,10 +129,10 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
                       fontWeight="medium"
                       color="#fff"
                     >
-                      {item.name}
+                      {item.title}
                     </Typography>
                     <Typography variant="body2" color="#ccc">
-                      {Util.convertToCurrency(item.price)} cada
+                      {Util.convertToCurrency(item.unitPrice)} cada
                     </Typography>
                   </Box>
                 </Box>

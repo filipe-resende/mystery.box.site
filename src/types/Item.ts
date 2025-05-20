@@ -1,8 +1,9 @@
 export default interface Item {
   id: number
-  name: string
-  price: number
-  thumb: string
+  title: string
+  unitPrice: number
+  pictureUrl: string
   quantity: number
   description: string
+  categoryId: string
 }

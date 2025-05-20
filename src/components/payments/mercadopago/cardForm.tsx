@@ -20,6 +20,7 @@ import MercadoPagoSecureFields from './secureFields'
 import { useSignalRPaymentStatus } from '@/hooks/usePaymentStatus'
 import PaymentStatus from '@/types/payment/PaymentStatus'
 import { Response, Result } from '@/types/Reponse'
+import { RootState } from '@/redux/store'
 
 const MercadoPagoCardForm = () => {
   initMercadoPago(process.env.REACT_APP_MERCADO_PAGO_PUBLIC_KEY || '')
@@ -38,12 +39,11 @@ const MercadoPagoCardForm = () => {
     'idle' | 'processing' | 'success' | 'error'
   >('idle')
 
-  const itens = useSelector((state: any) => state.carrinho.itens)
+  const itens = useSelector((state: RootState) => state.carrinho.itens)
   const total = itens.reduce(
-    (acc: number, item: any) => acc + item.quantity * item.price,
+    (acc: number, item: any) => acc + item.quantity * item.unitPrice,
     0
   )
-  const itemIds = itens.map((item: any) => item.id)
 
   useSignalRPaymentStatus(paymentId, async () => {
     try {
@@ -104,7 +104,7 @@ const MercadoPagoCardForm = () => {
               number: payment.identificationNumber
             }
           },
-          Cards: itemIds
+          itens
         },
         { withCredentials: true }
       )

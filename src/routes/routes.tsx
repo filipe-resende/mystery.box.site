@@ -9,6 +9,7 @@ import Terms from '../pages/terms'
 import Forgotten from '../pages/login/forgotten'
 import Active from '../pages/login/active'
 import Reset from '../pages/login/reset'
+import Purchases from '@/pages/purchases'
 
 export const Routes = () =>
   useRoutes([
@@ -49,6 +50,14 @@ export const Routes = () =>
       element: (
         <RequireAuth>
           <Checkout />
+        </RequireAuth>
+      )
+    },
+    {
+      path: '/minhas-compras',
+      element: (
+        <RequireAuth>
+          <Purchases />
         </RequireAuth>
       )
     }

@@ -13,10 +13,15 @@ import {
   Paper
 } from '@mui/material'
 import MercadoPagoCardForm from '@/components/payments/mercadopago/cardForm'
+import MercadoPagoPixForm from '@/components/payments/mercadopago/pixForm'
+import { RootState } from '@/redux/store'
 
 export default function Checkout() {
-  const itens = useSelector((state: any) => state.carrinho.itens)
-  const total = itens.reduce((acc, item) => acc + item.quantity * item.price, 0)
+  const itens = useSelector((state: RootState) => state.carrinho.itens)
+  const total = itens.reduce(
+    (acc, item) => acc + item.quantity * item.unitPrice,
+    0
+  )
 
   const { processPayment } = useCheckout()
 
@@ -66,19 +71,9 @@ export default function Checkout() {
                 />
               </RadioGroup>
 
-              {/* MercadoPago Desabilitado (Por enquanto...) */}
-              {/* {paymentMethod === 'credit_card' && <MercadoPagoCardForm />} */}
-
               {paymentMethod === 'credit_card' && <MercadoPagoCardForm />}
 
-              {paymentMethod === 'pix' && (
-                <Box mt={2}>
-                  <Typography>
-                    Você escolheu pagar via <strong>PIX</strong>. Ao confirmar,
-                    um QR Code será gerado.
-                  </Typography>
-                </Box>
-              )}
+              {paymentMethod === 'pix' && <MercadoPagoPixForm />}
             </div>
 
             <div className="col-lg-5 contact-text text-white">
@@ -101,10 +96,10 @@ export default function Checkout() {
                     }}
                   >
                     <Typography>
-                      {item.name} x {item.quantity}
+                      {item.title} x {item.quantity}
                     </Typography>
                     <Typography>
-                      {Util.convertToCurrency(item.quantity * item.price)}
+                      {Util.convertToCurrency(item.quantity * item.unitPrice)}
                     </Typography>
                   </Box>
                 ))}
