@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCheckout } from '@/hooks/useCheckout'
-import { Util } from '@/util/util'
+import { Util } from '@/lib/util'
 import Bottom from '@/components/bottom/bottom'
 
 import {

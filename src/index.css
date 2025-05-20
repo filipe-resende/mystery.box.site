@@ -2405,16 +2405,16 @@ i {
 .flip-card-front,
 .flip-card-back {
 	position: absolute;
-	/* width: 40vh; */
-	/* Ajuste o valor conforme necessário */
 	height: 100%;
 	-webkit-backface-visibility: hidden;
 	backface-visibility: hidden;
 	display: flex;
 	justify-content: center;
-	/* Centralize horizontalmente */
 	align-items: center;
-	/* Centralize verticalmente */
+}
+
+.form-label {
+	color: #feefd9;
 }
 
 .flip-card-front {
@@ -2426,9 +2426,7 @@ i {
 	transform: rotateY(180deg);
 	display: flex;
 	justify-content: center;
-	/* Centralize horizontalmente */
 	align-items: center;
-	/* Centralize verticalmente */
 }
 
 .active {

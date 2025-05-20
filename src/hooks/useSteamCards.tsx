@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import Item from '@/types/Item'
 import { Error, Response } from '@/types/Reponse'
-
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  withCredentials: true
-})
+import api from '@/lib/axios'
 
 export function useSteamCards() {
   const [cards, setCards] = useState<Item[]>([])

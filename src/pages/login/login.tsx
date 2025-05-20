@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ButtonBase } from '@mui/material'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '@/context/auth/AuthProvider'
-import { Regex } from '@/util/util'
+import { Regex } from '@/lib/util'
 import { RegisterForm } from '@/components/form/register'
 
 export default function Login() {

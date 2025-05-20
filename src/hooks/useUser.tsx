@@ -1,18 +1,9 @@
 import { useState } from 'react'
-import axios, { AxiosError, AxiosResponse } from 'axios'
-import Register from '../types/Register'
-import { Response } from '@/types/Reponse'
-
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  withCredentials: true
-})
-
-interface UserRegistrationResponse {
-  status: number
-  error: string
-  message: string
-}
+import { Register } from '../types/Register'
+import { Response, Result } from '@/types/Reponse'
+import { ProfileFormData } from '@/types/ProfileFormData'
+import { AxiosError } from 'axios'
+import api from '@/lib/axios'
 
 export interface RequestReponse {
   status: number
@@ -96,10 +87,48 @@ export function useUser() {
     }
   }
 
+  const updateUserProfile = async (
+    profile: ProfileFormData
+  ): Promise<RequestReponse | undefined> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await api.put<RequestReponse>('/profile', profile)
+      return response.data
+    } catch (err: any) {
+      setError('Erro ao atualizar perfil.')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getUserProfile = async (): Promise<ProfileFormData | undefined> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await api.get<Result<ProfileFormData>>('/profile')
+      if (response.data.isSuccess) {
+        return response.data.value
+      } else {
+        setError(response.data.error.message)
+      }
+    } catch (err: any) {
+      setError('Erro ao carregar perfil.')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     registerUser,
+    getUserProfile,
     sendEmailResetUserPassword,
     changeUserPassword,
+    updateUserProfile,
     loading,
     error
   }

@@ -1,12 +1,7 @@
 import { useState } from 'react'
-import axios from 'axios'
 import Item from '@/types/Item'
 import { Card } from '@/types/payment/Card'
-
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  withCredentials: true
-})
+import api from '@/lib/axios'
 
 export function useCheckout() {
   const [loading, setLoading] = useState(false)

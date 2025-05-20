@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Result } from '@/types/Reponse'
+import api from '@/lib/axios'
 
 export type PurchaseHistoryDTO = {
   id: string
@@ -12,11 +12,6 @@ export type PurchaseHistoryDTO = {
   unitPrice: number
   quantity: number
 }
-
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  withCredentials: true
-})
 
 export function usePurchaseHistory() {
   const [purchases, setPurchases] = useState<PurchaseHistoryDTO[]>([])

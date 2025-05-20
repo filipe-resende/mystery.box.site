@@ -4,7 +4,7 @@ import { Image } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { adicionarItem, atualizarItem } from '../redux/store'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import { Util } from '../util/util'
+import { Util } from '@/lib/util'
 import { useSteamCards } from '../hooks/useSteamCards'
 import Item from '../types/Item'
 

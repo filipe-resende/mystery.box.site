@@ -30,7 +30,11 @@ export default function Header() {
         <div className="header-warp">
           <div className="header-bar-warp">
             <NavLink to="/inicio" className="header-bar-figure">
-              <Image src="/img/logo.png" alt="Logo" />
+              <Image
+                src="/img/logo.png"
+                alt="Logo"
+                style={{ width: '160px', height: 'auto', objectFit: 'contain' }}
+              />
             </NavLink>
 
             <nav className="top-nav-area w-100">
@@ -63,7 +67,6 @@ export default function Header() {
             </nav>
 
             <div className="nav-icon-painel">
-              {/* Carrinho */}
               <Tooltip title="Carrinho">
                 <IconButton onClick={handleCartOpen} className="btn-painel">
                   {carrinhoItens.length > 0 && (
@@ -75,7 +78,6 @@ export default function Header() {
                 </IconButton>
               </Tooltip>
 
-              {/* Usuário */}
               {user ? (
                 <>
                   <Tooltip title="Minha Conta">
@@ -103,7 +105,7 @@ export default function Header() {
                     }
                   >
                     <span className="login-text">Login | Registrar-se</span>
-                    <PersonIcon style={{ fontSize: '1em' }} className="icon" />
+                    <PersonIcon style={{ fontSize: '24px' }} className="icon" />
                   </NavLink>
                 </Button>
               )}
