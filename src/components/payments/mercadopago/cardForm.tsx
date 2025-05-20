@@ -15,7 +15,7 @@ import { createCardToken, initMercadoPago } from '@mercadopago/sdk-react'
 import axios from 'axios'
 
 import { Card } from '@/types/payment/Card'
-import { Regex, Util } from '@/util/util'
+import { Regex, Util } from '@/lib/util'
 import MercadoPagoSecureFields from './secureFields'
 import { useSignalRPaymentStatus } from '@/hooks/usePaymentStatus'
 import PaymentStatus from '@/types/payment/PaymentStatus'
@@ -214,7 +214,22 @@ const MercadoPagoCardForm = () => {
         <Button
           variant="contained"
           fullWidth
-          sx={{ mt: 3 }}
+          sx={{
+            px: 4,
+            py: 1.5,
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            backgroundColor: '#b01ba5',
+            color: '#feefd9',
+            border: '2px solid transparent',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: '#fff',
+              color: '#b01ba5',
+              border: '2px solid #b01ba5'
+            },
+            textTransform: 'none'
+          }}
           onClick={handleCheckout}
           disabled={loading}
         >

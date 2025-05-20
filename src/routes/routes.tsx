@@ -10,6 +10,7 @@ import Forgotten from '../pages/login/forgotten'
 import Active from '../pages/login/active'
 import Reset from '../pages/login/reset'
 import Purchases from '@/pages/purchases'
+import Profile from '@/pages/profile'
 
 export const Routes = () =>
   useRoutes([
@@ -50,6 +51,14 @@ export const Routes = () =>
       element: (
         <RequireAuth>
           <Checkout />
+        </RequireAuth>
+      )
+    },
+    {
+      path: '/perfil',
+      element: (
+        <RequireAuth>
+          <Profile />
         </RequireAuth>
       )
     },

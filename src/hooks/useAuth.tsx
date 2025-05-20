@@ -1,12 +1,8 @@
 import { useState } from 'react'
-import axios, { AxiosError } from 'axios'
 import { Error, Response } from '@/types/Reponse'
 import { UserAuth } from '@/types/User'
-
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  withCredentials: true
-})
+import api from '@/lib/axios'
+import { AxiosError } from 'axios'
 
 export function useAuthApi() {
   const [loading, setLoading] = useState(false)

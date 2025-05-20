@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ButtonBase, Checkbox } from '@mui/material'
-import { Mask, Regex, Util } from '@/util/util'
+import { Mask, Regex, Util } from '@/lib/util'
 import { Register } from '@/types/Register'
 import { useUser } from '@/hooks/useUser'
 import { useNavigate } from 'react-router-dom'

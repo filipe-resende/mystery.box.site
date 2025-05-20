@@ -1,6 +1,6 @@
 import React from 'react'
 import { usePurchaseHistory } from '@/hooks/usePurchaseHistory'
-import { Util } from '@/util/util'
+import { Util } from '@/lib/util'
 
 export default function Purchases() {
   const { purchases, loading, error } = usePurchaseHistory()

@@ -16,7 +16,7 @@ import {
   RootState
 } from '../../redux/store'
 import { Link } from 'react-router-dom'
-import { Util } from '../../util/util'
+import { Util } from '@/lib/util'
 
 interface Props {
   open: boolean
