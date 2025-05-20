@@ -99,17 +99,7 @@ export default function Login() {
           </div>
           <div className="flip-card-back">
             <div className="wrapper">
-              <div className="btn-div__login">
-                {' '}
-                <ButtonBase
-                  className="btn-back__icon"
-                  onClick={handleFlipClick}
-                >
-                  <i className="bx bx-arrow-back invert"></i>
-                </ButtonBase>
-              </div>
-
-              <RegisterForm />
+              <RegisterForm onBack={handleFlipClick} />
             </div>
           </div>
         </div>

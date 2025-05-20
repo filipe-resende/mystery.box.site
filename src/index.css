@@ -1852,7 +1852,6 @@ btn-painel:hover {
 
 .btn-div__login {
 	width: 100%;
-	justify-content: flex-end;
 	display: flex;
 }
 
@@ -2259,6 +2258,27 @@ i {
 	font-size: 20px;
 }
 
+.input-box select {
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	border: none;
+	outline: none;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	border-radius: 40px;
+	font-size: 16px;
+	color: #fff;
+	padding: 0px 0 0px 20px;
+	appearance: none;
+	/* remove seta padrão */
+}
+
+.input-box select option {
+	background-color: #1a1a1a;
+	color: #fff;
+}
+
+
 .wrapper .remember-forgot {
 	display: flex;
 	justify-content: center;
@@ -2277,7 +2297,7 @@ i {
 }
 
 .invert {
-	transform: scaleX(-1);
+	transform: scaleX(1);
 }
 
 .form-p__accept {

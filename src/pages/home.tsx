@@ -135,12 +135,12 @@ export default function Home() {
                       >
                         <div className="image-container">
                           <Image
-                            src={steamCard.thumb}
+                            src={steamCard.pictureUrl}
                             alt=""
                             className="fade-image"
                           />
                           <div className="title-overlay">
-                            <h4>{steamCard.name}</h4>
+                            <h4>{steamCard.title}</h4>
                           </div>
                           <div className="hover-icon">
                             <span className="div-span shop-div__span">
@@ -162,7 +162,7 @@ export default function Home() {
                       <span className="btn-text">Adicionar ao Carrinho</span>
                       <span className="btn-price">
                         <AddShoppingCartIcon style={{ fontSize: 20 }} />
-                        {Util.convertToCurrency(steamCard.price)}
+                        {Util.convertToCurrency(steamCard.unitPrice)}
                         <Image
                           src="/img/icons/double-arrow.png"
                           alt="#"
