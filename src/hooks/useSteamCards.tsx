@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import Item from '@/types/Item'
 import { Error, Response } from '@/types/Reponse'
 import api from '@/lib/axios'
+import { AxiosError } from 'axios'
+import { useSnackbar } from '@/context/SnackbarContext'
 
 export function useSteamCards() {
+  const { showSnackbar } = useSnackbar()
   const [cards, setCards] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error>(null)
@@ -18,8 +21,9 @@ export function useSteamCards() {
           setError(response.data.error)
         }
       } catch (err) {
+        const axiosErr = err as AxiosError
+        showSnackbar(axiosErr.message, 'error')
         setError(err)
-        console.error('Erro ao processar a solicitação:', err)
       } finally {
         setLoading(false)
       }

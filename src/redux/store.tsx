@@ -1,9 +1,14 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import ShoppingCartState from '../types/ShoppingCartState'
 import Item from '../types/Item'
+import Cookies from 'js-cookie'
 
 const initialState: ShoppingCartState = {
   itens: []
+}
+
+const salvarCarrinhoNoCookie = (itens: Item[]) => {
+  Cookies.set('carrinho', JSON.stringify(itens), { expires: 7 }) // 7 dias
 }
 
 const carrinhoSlice = createSlice({
@@ -18,6 +23,7 @@ const carrinhoSlice = createSlice({
       } else {
         state.itens.push(action.payload)
       }
+      salvarCarrinhoNoCookie(state.itens)
     },
 
     atualizarItem: (state, action: PayloadAction<{ id: number }>) => {
@@ -25,6 +31,7 @@ const carrinhoSlice = createSlice({
       if (item) {
         item.quantity += 1
       }
+      salvarCarrinhoNoCookie(state.itens)
     },
 
     diminuirItem: (state, action: PayloadAction<{ id: number }>) => {
@@ -40,6 +47,7 @@ const carrinhoSlice = createSlice({
 
     removerItem: (state, action: PayloadAction<number>) => {
       state.itens = state.itens.filter(item => item.id !== action.payload)
+      salvarCarrinhoNoCookie(state.itens)
     }
   }
 })
@@ -53,7 +61,6 @@ const store = configureStore({
   }
 })
 
-// Tipos para usar com useSelector e useDispatch
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 

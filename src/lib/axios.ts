@@ -1,40 +1,19 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 const api: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API,
   withCredentials: true
 })
 
-// Tipagem de erro esperado na resposta
-interface ApiErrorResponse {
-  type?: string
-  title?: string
-  status?: number
-  errors?: Record<string, string[]>
-  message?: string
-  traceId?: string
-}
-
-// Interceptor global
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError<ApiErrorResponse>) => {
-    if (error.response?.status === 400) {
-      console.warn('Erro 400 detectado. Redirecionando para login ou logout...')
-
-      // Exemplo: limpar token/localStorage
+  res => res,
+  err => {
+    if (err.response?.status === 400) {
+      window.__GLOBAL_SNACKBAR__?.('Solicitação inválida.', 'error')
       localStorage.removeItem('access_token')
-
-      // Redireciona para a página de login
-      window.location.href = '/login'
+      setTimeout(() => (window.location.href = '/login'), 1500)
     }
-
-    return Promise.reject(error)
+    return Promise.reject(err)
   }
 )
 

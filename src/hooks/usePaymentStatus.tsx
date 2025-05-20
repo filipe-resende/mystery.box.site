@@ -4,11 +4,14 @@ import {
   HubConnection,
   LogLevel
 } from '@microsoft/signalr'
+import { useSnackbar } from '@/context/SnackbarContext'
 
 export const useSignalRPaymentStatus = (
   paymentId: number | null,
   onUpdate: () => void
 ) => {
+  const { showSnackbar } = useSnackbar()
+
   useEffect(() => {
     if (!paymentId) return
 
@@ -21,7 +24,7 @@ export const useSignalRPaymentStatus = (
       .build()
 
     const handlePagamentoAtualizado = (data: any) => {
-      console.log('🔔 Atualização recebida via SignalR:', data)
+      showSnackbar('🔔 Atualização recebida via SignalR', 'warning')
 
       if (data?.id == paymentId) {
         onUpdate()
@@ -31,18 +34,19 @@ export const useSignalRPaymentStatus = (
     connection
       .start()
       .then(async () => {
-        console.log('✅ SignalR conectado')
+        showSnackbar('✅ SignalR conectado', 'success')
+
         await connection.invoke('JoinGroup', paymentId.toString())
         connection.on('PagamentoAtualizado', handlePagamentoAtualizado)
       })
       .catch(error => {
-        console.error('❌ Erro ao conectar ao SignalR:', error)
+        showSnackbar(`❌ Erro ao conectar ao SignalR ${error}`, 'error')
       })
 
     return () => {
       connection.off('PagamentoAtualizado', handlePagamentoAtualizado)
       connection.stop()
-      console.log('❌ SignalR desconectado')
+      showSnackbar('❌ SignalR desconectado', 'warning')
     }
   }, [paymentId])
 }

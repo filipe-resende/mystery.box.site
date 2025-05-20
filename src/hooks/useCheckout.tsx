@@ -2,8 +2,11 @@ import { useState } from 'react'
 import Item from '@/types/Item'
 import { Card } from '@/types/payment/Card'
 import api from '@/lib/axios'
+import { useSnackbar } from '@/context/SnackbarContext'
+import { AxiosError } from 'axios'
 
 export function useCheckout() {
+  const { showSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -19,7 +22,8 @@ export function useCheckout() {
         setError(response.data.error.messag)
       }
     } catch (err) {
-      console.error('Erro ao processar pagamento', err)
+      const axiosErr = err as AxiosError
+      showSnackbar(axiosErr.message, 'error')
       setError('Erro ao processar pagamento')
       return null
     } finally {

@@ -13,7 +13,6 @@ import {
 import { useSelector } from 'react-redux'
 import { createCardToken, initMercadoPago } from '@mercadopago/sdk-react'
 import axios from 'axios'
-
 import { Card } from '@/types/payment/Card'
 import { Regex, Util } from '@/lib/util'
 import MercadoPagoSecureFields from './secureFields'

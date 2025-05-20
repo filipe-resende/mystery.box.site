@@ -3,8 +3,10 @@ import { Error, Response } from '@/types/Reponse'
 import { UserAuth } from '@/types/User'
 import api from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { useSnackbar } from '@/context/SnackbarContext'
 
 export function useAuthApi() {
+  const { showSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error>(null)
 
@@ -17,13 +19,15 @@ export function useAuthApi() {
         password
       })
       if (response.data.isSuccess) {
+        showSnackbar('Login realizado com sucesso!', 'success')
+
         return response.data.value
       } else {
         setError(response.data.error)
       }
     } catch (err: any) {
       const axiosErr = err as AxiosError
-      console.error(axiosErr)
+      showSnackbar(axiosErr.message, 'error')
     } finally {
       setLoading(false)
     }
@@ -42,7 +46,7 @@ export function useAuthApi() {
       }
     } catch (err) {
       const axiosErr = err as AxiosError
-      console.error(axiosErr)
+      showSnackbar(axiosErr.message, 'error')
     } finally {
       setLoading(false)
     }
@@ -61,7 +65,7 @@ export function useAuthApi() {
       }
     } catch (err: unknown) {
       const axiosErr = err as AxiosError
-      console.error('Erro no logout:', axiosErr)
+      showSnackbar(axiosErr.message, 'error')
       setError({ message: 'Erro ao sair', code: 'LOGOUT_ERROR' })
       return false
     } finally {
