@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useCheckout } from '@/hooks/useCheckout'
 import { Util } from '@/lib/util'
 import Bottom from '@/components/bottom/bottom'
-
 import {
   Typography,
   RadioGroup,
@@ -22,8 +20,6 @@ export default function Checkout() {
     (acc, item) => acc + item.quantity * item.unitPrice,
     0
   )
-
-  const { processPayment } = useCheckout()
 
   const [paymentMethod, setPaymentMethod] = useState<
     'credit_card' | 'pix' | null
@@ -88,21 +84,55 @@ export default function Checkout() {
                   <Box
                     key={item.id}
                     display="flex"
-                    justifyContent="space-between"
-                    mb={1}
+                    gap={2}
+                    alignItems="center"
+                    mb={2}
                     sx={{
                       borderBottom: '1px solid rgba(255,255,255,0.1)',
-                      pb: 1
+                      pb: 2
                     }}
                   >
-                    <Typography>
-                      {item.title} x {item.quantity}
-                    </Typography>
-                    <Typography>
+                    {/* Imagem */}
+                    <Box
+                      component="img"
+                      src={item.pictureUrl}
+                      alt={item.title}
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        objectFit: 'cover',
+                        borderRadius: 2,
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        boxShadow: '0 0 6px rgba(0,0,0,0.3)'
+                      }}
+                    />
+
+                    {/* Informações */}
+                    <Box flexGrow={1}>
+                      <Typography
+                        fontWeight="bold"
+                        color="#fff"
+                        mb={0.3}
+                        lineHeight={1.2}
+                      >
+                        {item.title} x {item.quantity}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="rgba(255,255,255,0.7)"
+                        lineHeight={1.2}
+                      >
+                        {item.description}
+                      </Typography>
+                    </Box>
+
+                    {/* Preço total */}
+                    <Typography fontWeight="bold" color="#fff">
                       {Util.convertToCurrency(item.quantity * item.unitPrice)}
                     </Typography>
                   </Box>
                 ))}
+
                 <Box display="flex" justifyContent="space-between" mt={2}>
                   <Typography variant="h6">Total:</Typography>
                   <Typography variant="h6">

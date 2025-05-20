@@ -3,6 +3,7 @@ import { Register } from '../types/Register'
 import { Response, Result } from '@/types/Reponse'
 import { ProfileFormData } from '@/types/ProfileFormData'
 import { AxiosError } from 'axios'
+import { useSnackbar } from '@/context/SnackbarContext'
 import api from '@/lib/axios'
 
 export interface RequestReponse {
@@ -13,6 +14,7 @@ export interface RequestReponse {
 }
 
 export function useUser() {
+  const { showSnackbar } = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,7 +27,7 @@ export function useUser() {
       return response.data
     } catch (err: any) {
       const axiosErr = err as AxiosError
-      console.error(axiosErr)
+      showSnackbar(axiosErr.message, 'warning')
     } finally {
       setLoading(false)
     }
@@ -52,7 +54,8 @@ export function useUser() {
         }
       }
       setError('Erro ao solicitar redefinição de senha.')
-      console.error(err)
+      const axiosErr = err as AxiosError
+      showSnackbar(axiosErr.message, 'warning')
     } finally {
       setLoading(false)
     }
@@ -81,7 +84,8 @@ export function useUser() {
         }
       }
       setError('Erro ao redefinir a senha.')
-      console.error(err)
+      const axiosErr = err as AxiosError
+      showSnackbar(axiosErr.message, 'warning')
     } finally {
       setLoading(false)
     }
@@ -98,7 +102,8 @@ export function useUser() {
       return response.data
     } catch (err: any) {
       setError('Erro ao atualizar perfil.')
-      console.error(err)
+      const axiosErr = err as AxiosError
+      showSnackbar(axiosErr.message, 'warning')
     } finally {
       setLoading(false)
     }
@@ -117,7 +122,8 @@ export function useUser() {
       }
     } catch (err: any) {
       setError('Erro ao carregar perfil.')
-      console.error(err)
+      const axiosErr = err as AxiosError
+      showSnackbar(axiosErr.message, 'warning')
     } finally {
       setLoading(false)
     }
