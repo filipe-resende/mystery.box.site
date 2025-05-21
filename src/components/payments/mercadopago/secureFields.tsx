@@ -3,10 +3,13 @@ import { Box, Typography, Grid } from '@mui/material'
 import {
   CardNumber,
   ExpirationDate,
+  initMercadoPago,
   SecurityCode
 } from '@mercadopago/sdk-react'
 
 const PaymentFormFields: React.FC = () => {
+  initMercadoPago(process.env.REACT_APP_MERCADO_PAGO_PUBLIC_KEY || '')
+
   const containerStyle = {
     position: 'relative',
     width: '100%',
