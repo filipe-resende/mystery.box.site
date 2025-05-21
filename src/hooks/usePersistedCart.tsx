@@ -1,11 +1,13 @@
-// src/hooks/usePersistedCart.ts
 import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 import { useDispatch } from 'react-redux'
 import { adicionarItem } from '@/redux/store'
 import Item from '@/types/Item'
+import { useSnackbar } from '@/context/SnackbarContext'
 
 export default function usePersistedCart() {
+  const { showSnackbar } = useSnackbar()
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function usePersistedCart() {
         itens.forEach(item => dispatch(adicionarItem(item)))
       }
     } catch (err) {
-      console.error('Erro ao carregar carrinho do cookie:', err)
+      showSnackbar('Erro ao carregar carrinho do cookie:', 'error')
     }
   }, [dispatch])
 }

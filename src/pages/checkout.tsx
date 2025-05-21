@@ -20,6 +20,7 @@ export default function Checkout() {
     (acc, item) => acc + item.quantity * item.unitPrice,
     0
   )
+  const [valorParcela, setValorParcela] = useState<number | null>(null)
 
   const [paymentMethod, setPaymentMethod] = useState<
     'credit_card' | 'pix' | null
@@ -67,7 +68,9 @@ export default function Checkout() {
                 />
               </RadioGroup>
 
-              {paymentMethod === 'credit_card' && <MercadoPagoCardForm />}
+              {paymentMethod === 'credit_card' && (
+                <MercadoPagoCardForm onInstallmentChange={setValorParcela} />
+              )}
 
               {paymentMethod === 'pix' && <MercadoPagoPixForm />}
             </div>
@@ -134,9 +137,9 @@ export default function Checkout() {
                 ))}
 
                 <Box display="flex" justifyContent="space-between" mt={2}>
-                  <Typography variant="h6">Total:</Typography>
+                  <Typography variant="h6">{'Total :'}</Typography>
                   <Typography variant="h6">
-                    {Util.convertToCurrency(total)}
+                    {Util.convertToCurrency(valorParcela ?? total)}
                   </Typography>
                 </Box>
               </Paper>

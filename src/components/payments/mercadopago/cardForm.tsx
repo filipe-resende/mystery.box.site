@@ -1,36 +1,82 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Typography,
   TextField,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   Button,
   CircularProgress
 } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { createCardToken, initMercadoPago } from '@mercadopago/sdk-react'
+import { createCardToken, getInstallments } from '@mercadopago/sdk-react'
 import axios from 'axios'
 import { Card } from '@/types/payment/Card'
-import { Regex, Util } from '@/lib/util'
+import { Regex } from '@/lib/util'
 import MercadoPagoSecureFields from './secureFields'
 import { useSignalRPaymentStatus } from '@/hooks/usePaymentStatus'
 import PaymentStatus from '@/types/payment/PaymentStatus'
 import { Response, Result } from '@/types/Reponse'
 import { RootState } from '@/redux/store'
+import { CardToken } from '@mercadopago/sdk-react/esm/coreMethods/util/types'
+import { Installments } from '@mercadopago/sdk-react/esm/coreMethods/getInstallments/types'
+import { useSnackbar } from '@/context/SnackbarContext'
 
-const MercadoPagoCardForm = () => {
-  initMercadoPago(process.env.REACT_APP_MERCADO_PAGO_PUBLIC_KEY || '')
+type Props = {
+  onInstallmentChange?: (amount: number) => void
+}
+
+const MercadoPagoCardForm = ({ onInstallmentChange }: Props) => {
+  const { showSnackbar } = useSnackbar()
 
   const [paymentId, setPaymentId] = useState<number | null>(null)
+  const [cardToken, setCardToken] = useState<CardToken>(null)
+  const [installments, setInstallments] = useState<Installments[]>([])
+
   const [payment, setPayment] = useState<Card>({
     name: '',
-    installments: '1',
+    installments: '',
     identificationNumber: '',
     identificationType: 'CPF'
   })
+
+  const isFormValid =
+    payment.name.trim().length > 5 &&
+    Regex.cpf(payment.identificationNumber) &&
+    payment.installments !== '' &&
+    cardToken?.id
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const isValid =
+        payment.name.trim().length > 5 &&
+        Regex.cpf(payment.identificationNumber)
+
+      if (!isValid) return
+
+      try {
+        const response = await createCardToken({
+          cardholderName: payment.name.trim(),
+          identificationType: payment.identificationType,
+          identificationNumber: payment.identificationNumber.replace(/\D/g, '')
+        })
+
+        setCardToken(response)
+
+        const installments = await getInstallments({
+          amount: total.toString(),
+          bin: response.first_six_digits
+        })
+
+        setInstallments(installments)
+      } catch (err) {
+        showSnackbar('❌ Erro ao gerar token do cartão.', 'error')
+      }
+    }
+
+    fetchToken()
+  }, [payment])
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -43,6 +89,18 @@ const MercadoPagoCardForm = () => {
     (acc: number, item: any) => acc + item.quantity * item.unitPrice,
     0
   )
+
+  const handleInstallmentChange = (selected: string) => {
+    setPayment(prev => ({ ...prev, installments: selected }))
+
+    const selectedInstallment = installments[0]?.payer_costs.find(
+      i => String(i.installments) === selected
+    )
+
+    if (selectedInstallment && onInstallmentChange) {
+      onInstallmentChange(selectedInstallment.total_amount)
+    }
+  }
 
   useSignalRPaymentStatus(paymentId, async () => {
     try {
@@ -57,7 +115,7 @@ const MercadoPagoCardForm = () => {
         setStatus('error')
       }
     } catch (err) {
-      console.error('❌ Erro ao buscar status real:', err)
+      showSnackbar('❌Erro ao buscar status real.', 'error')
       setStatus('error')
     }
   })
@@ -83,19 +141,13 @@ const MercadoPagoCardForm = () => {
       if (!Regex.cpf(payment.identificationNumber))
         throw new Error('CPF inválido.')
 
-      const response = await createCardToken({
-        cardholderName: payment.name.trim(),
-        identificationType: payment.identificationType,
-        identificationNumber: payment.identificationNumber.replace(/\D/g, '')
-      })
-
       const res = await axios.post<Response<PaymentStatus>>(
         `${process.env.REACT_APP_API}/payment`,
         {
-          token: response.id,
-          paymentMethodId: response.card_id,
+          token: cardToken.id,
+          paymentMethodId: cardToken.card_id,
           installments: payment.installments,
-          firstSixDigits: response.first_six_digits,
+          firstSixDigits: cardToken.first_six_digits,
           transactionAmount: total,
           payer: {
             identification: {
@@ -115,7 +167,7 @@ const MercadoPagoCardForm = () => {
         throw new Error('Falha ao iniciar pagamento.')
       }
     } catch (err: any) {
-      console.error('Erro ao processar pagamento:', err)
+      showSnackbar('❌Erro ao processar pagamento.', 'error')
       setError(err?.message || 'Erro inesperado ao processar pagamento.')
       setStatus('error')
     } finally {
@@ -166,20 +218,30 @@ const MercadoPagoCardForm = () => {
       />
 
       <FormControl fullWidth margin="normal" sx={muiInputSx}>
-        <InputLabel id="parcelas-label">Parcelas</InputLabel>
         <Select
           labelId="parcelas-label"
           value={payment.installments}
           name="installments"
           label="Parcelas"
-          onChange={e =>
-            setPayment({ ...payment, installments: e.target.value })
-          }
-          sx={{ color: '#fff' }}
+          onChange={e => handleInstallmentChange(e.target.value)}
+          displayEmpty
+          sx={{
+            color: '#fff',
+            '& .MuiSelect-select': {
+              borderRadius: '4px'
+            }
+          }}
         >
-          {[1, 2, 3].map(i => (
-            <MenuItem key={i} value={String(i)} sx={{ color: '#fff' }}>
-              {i}x de {Util.convertToCurrency(total / i)}
+          {(!installments[0]?.payer_costs ||
+            installments[0].payer_costs.length === 0) && (
+            <MenuItem value="">
+              <em>Selecione a quantidade de parcelas</em>
+            </MenuItem>
+          )}
+
+          {installments[0]?.payer_costs.map(i => (
+            <MenuItem key={i.installments} value={String(i.installments)}>
+              {i.recommended_message}
             </MenuItem>
           ))}
         </Select>
@@ -230,7 +292,7 @@ const MercadoPagoCardForm = () => {
             textTransform: 'none'
           }}
           onClick={handleCheckout}
-          disabled={loading}
+          disabled={loading || !isFormValid}
         >
           {loading ? (
             <CircularProgress size={24} sx={{ color: '#fff' }} />
