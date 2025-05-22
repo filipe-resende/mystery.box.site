@@ -1,9 +1,6 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 export default function Active() {
-  const { token } = useParams()
-
   return (
     <div className={`login`}>
       <div className="flip-card">

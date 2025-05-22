@@ -71,7 +71,7 @@ const MercadoPagoCardForm = ({ onInstallmentChange }: Props) => {
 
         setInstallments(installments)
       } catch (err) {
-        showSnackbar('❌ Erro ao gerar token do cartão.', 'error')
+        showSnackbar(`❌ Erro ao gerar token do cartão. ${err}`, 'error')
       }
     }
 
@@ -115,7 +115,7 @@ const MercadoPagoCardForm = ({ onInstallmentChange }: Props) => {
         setStatus('error')
       }
     } catch (err) {
-      showSnackbar('❌Erro ao buscar status real.', 'error')
+      showSnackbar(`❌Erro ao buscar status real. ${err}`, 'error')
       setStatus('error')
     }
   })

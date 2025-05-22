@@ -47,7 +47,7 @@ const PaymentFormFields: React.FC = () => {
         </div>
 
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6, md: 6 }}>
             <Typography variant="caption" style={labelStyle}>
               Validade (MM/AA)
             </Typography>
@@ -64,7 +64,7 @@ const PaymentFormFields: React.FC = () => {
             </div>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6, md: 6 }}>
             <Typography variant="caption" style={labelStyle}>
               Código de Segurança
             </Typography>

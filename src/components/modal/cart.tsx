@@ -109,7 +109,7 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
             }}
           >
             <Grid container spacing={2} alignItems="center">
-              <Grid item xs={8}>
+              <Grid size={{ xs: 6, md: 6 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <img
                     className="image-container"
@@ -138,7 +138,7 @@ const CartModal: React.FC<Props> = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item xs={4} textAlign="right">
+              <Grid size={{ xs: 5, md: 6 }} textAlign="right">
                 <IconButton
                   size="small"
                   onClick={() => handleDiminuirQuantidade(item.id)}
