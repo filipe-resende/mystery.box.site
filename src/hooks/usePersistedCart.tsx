@@ -21,7 +21,7 @@ export default function usePersistedCart() {
         itens.forEach(item => dispatch(adicionarItem(item)))
       }
     } catch (err) {
-      showSnackbar('Erro ao carregar carrinho do cookie:', 'error')
+      showSnackbar(`Erro ao carregar carrinho do cookie: ${err}`, 'error')
     }
   }, [dispatch])
 }

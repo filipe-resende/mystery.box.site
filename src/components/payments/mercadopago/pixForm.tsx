@@ -2,17 +2,18 @@ import React, { useState } from 'react'
 import { Box, Typography, Button, CircularProgress } from '@mui/material'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
-
 import { useSignalRPaymentStatus } from '@/hooks/usePaymentStatus'
 import PaymentStatus from '@/types/payment/PaymentStatus'
 import { Response, Result } from '@/types/Reponse'
 import { RootState } from '@/redux/store'
+import { useSnackbar } from '@/context/SnackbarContext'
 
 const MercadoPagoPixForm = () => {
   const [paymentId, setPaymentId] = useState<number | null>(null)
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { showSnackbar } = useSnackbar()
   const [status, setStatus] = useState<
     'idle' | 'processing' | 'success' | 'error'
   >('idle')
@@ -37,7 +38,7 @@ const MercadoPagoPixForm = () => {
         setStatus('error')
       }
     } catch (err) {
-      console.error('❌ Erro ao buscar status real:', err)
+      showSnackbar('❌ Erro ao buscar status real:', err)
       setStatus('error')
     }
   })
@@ -66,7 +67,7 @@ const MercadoPagoPixForm = () => {
         throw new Error('Falha ao iniciar pagamento via PIX.')
       }
     } catch (err: any) {
-      console.error('Erro ao processar pagamento PIX:', err)
+      showSnackbar('❌ Erro ao processar pagamento PIX:', err)
       setError(err?.message || 'Erro inesperado ao processar pagamento.')
       setStatus('error')
     } finally {

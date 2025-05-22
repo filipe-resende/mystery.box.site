@@ -12,6 +12,7 @@ import Header from './components/header/header'
 import Footer from './components/footer/footer'
 import { SnackbarProvider } from './context/SnackbarContext'
 import AppInitializer from './components/AppInitializer'
+import CookieBanner from './components/banner/cookieBanner'
 
 const root = createRoot(document.getElementById('root'))
 root.render(
@@ -19,6 +20,7 @@ root.render(
     <SnackbarProvider>
       <AuthProvider>
         <Router>
+          <CookieBanner />
           <AppInitializer />
           <Header />
           <Routes />

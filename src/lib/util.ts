@@ -89,7 +89,7 @@ export class Util {
     }
 
     return Number(number).toLocaleString(mergedOptions.locale, {
-      style: mergedOptions.style,
+      style: mergedOptions.style as 'decimal' | 'currency' | 'percent',
       currency: mergedOptions.currency
     })
   }

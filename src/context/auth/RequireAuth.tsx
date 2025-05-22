@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { JSX } from 'react'
 
 import Login from '../../pages/login/login'
 import { useAuth } from './AuthProvider'
