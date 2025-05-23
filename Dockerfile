@@ -25,8 +25,15 @@ RUN rm -rf ./*
 # Copia o build da aplicação React
 COPY --from=build /app/build .
 
-# Exponha a porta padrão
+# Copia os certificados SSL
+COPY certs /etc/nginx/ssl
+
+# Copia a configuração customizada
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Exponha a porta padrão HTTPS
 EXPOSE 443
 
-# Comando para servir com HTTPS
-CMD ["serve", "-s", "build", "-l", "443", "--ssl-cert", "/certs/localhost.pem", "--ssl-key", "/certs/localhost-key.pem"]
+# Inicia o NGINX
+CMD ["nginx", "-g", "daemon off;"]
+
