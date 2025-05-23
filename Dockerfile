@@ -14,6 +14,3 @@ COPY . ./
 
 # Compila o projeto
 RUN yarn build
-
-# Copia o build da aplicação React
-COPY --from=build /app/build .
