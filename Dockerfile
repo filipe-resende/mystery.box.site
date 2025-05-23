@@ -26,7 +26,7 @@ RUN rm -rf ./*
 COPY --from=build /app/build .
 
 # Exponha a porta padrão
-EXPOSE 80
+EXPOSE 443
 
 # Inicia o NGINX
 CMD ["nginx", "-g", "daemon off;"]
