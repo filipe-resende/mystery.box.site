@@ -1,25 +1,28 @@
 # Etapa 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM node:20 AS build
+
 WORKDIR /app
 
-# Copia arquivos de projeto e restaura dependências
-COPY *.csproj ./
-RUN dotnet restore
+# Copia arquivos de dependências
+COPY package.json yarn.lock ./
 
-# Copia o restante do código e compila
+# Instala dependências
+RUN yarn install
+
+# Copia o restante do código
 COPY . ./
-RUN dotnet publish -c Release -o out
 
-# Etapa 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
+# Compila o projeto
+RUN yarn build
 
-# Copia o build da etapa anterior
-COPY --from=build /app/out ./
+# Etapa 2: Deploy com NGINX
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-# Expor a porta padrão
+RUN rm -rf ./*
+
+COPY --from=build /app/dist .
+
 EXPOSE 80
 
-# Comando para iniciar a aplicação
-ENTRYPOINT ["dotnet", "Api.dll"]
-
+CMD ["nginx", "-g", "daemon off;"]
