@@ -28,5 +28,5 @@ COPY --from=build /app/build .
 # Exponha a porta padrão
 EXPOSE 443
 
-# Inicia o NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para servir com HTTPS
+CMD ["serve", "-s", "build", "-l", "443", "--ssl-cert", "/certs/localhost.pem", "--ssl-key", "/certs/localhost-key.pem"]
