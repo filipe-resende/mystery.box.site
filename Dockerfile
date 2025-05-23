@@ -19,10 +19,14 @@ RUN yarn build
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
+# Limpa arquivos padrões do NGINX
 RUN rm -rf ./*
 
-COPY --from=build /app/dist .
+# Copia o build da aplicação React
+COPY --from=build /app/build .
 
+# Exponha a porta padrão
 EXPOSE 80
 
+# Inicia o NGINX
 CMD ["nginx", "-g", "daemon off;"]
